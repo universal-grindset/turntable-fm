@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { chat } from "@tanstack/ai";
-import { anthropicText } from "@tanstack/ai-anthropic";
+import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { TRACK_POOLS } from "../../lib/track-pools";
 
@@ -25,7 +24,9 @@ export const Route = createFileRoute("/api/aidj")({
         }
         const pool = TRACK_POOLS[body.roomId] ?? TRACK_POOLS["the-basement"];
         const count = body.count ?? 3;
-        const apiKey = (globalThis as any).process?.env?.ANTHROPIC_API_KEY;
+        const apiKey =
+          (typeof process !== "undefined" && process.env?.ANTHROPIC_API_KEY) ||
+          (globalThis as any).ANTHROPIC_API_KEY;
 
         // Helper: pick `count` indexes from the pool avoiding any that match
         // recentTitles. Used as the fallback and as a safety net.
@@ -46,15 +47,16 @@ export const Route = createFileRoute("/api/aidj")({
 
         if (apiKey) {
           try {
+            const anthropic = new Anthropic({ apiKey });
             const poolList = pool
               .map((t, i) => `${i}: ${t.title}${t.durationSec ? ` (${Math.floor(t.durationSec / 60)}:${(t.durationSec % 60).toString().padStart(2, "0")})` : ""}`)
               .join("\n");
             const recentList = (body.recentTitles ?? []).length
               ? `\n\nJust played (avoid repeats):\n${(body.recentTitles ?? []).join("\n")}`
               : "";
-            const stream = chat({
-              adapter: anthropicText(),
+            const completion = await anthropic.messages.create({
               model: "claude-haiku-4-5-20251001",
+              max_tokens: 256,
               messages: [
                 {
                   role: "user",
@@ -68,12 +70,10 @@ export const Route = createFileRoute("/api/aidj")({
                 },
               ],
             });
-
-            let raw = "";
-            for await (const chunk of stream) {
-              const text = (chunk as any)?.delta?.text ?? (chunk as any)?.text ?? "";
-              if (typeof text === "string") raw += text;
-            }
+            const raw = completion.content
+              .filter((c: any) => c.type === "text")
+              .map((c: any) => c.text)
+              .join("");
             const match = raw.match(/\{[\s\S]*\}/);
             if (match) {
               const parsed = JSON.parse(match[0]);

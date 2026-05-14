@@ -19,6 +19,7 @@
     "check": "prettier --check ."
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/ai": "latest",
     "@tanstack/ai-anthropic": "latest",
