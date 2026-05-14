@@ -77,6 +77,9 @@ importers:
       nitro:
         specifier: 3.0.260429-beta
         version: 3.0.260429-beta(jiti@2.7.0)(lru-cache@11.3.6)(vite@8.0.12(@types/node@22.19.19)(jiti@2.7.0))
+      openai:
+        specifier: ^6.37.0
+        version: 6.37.0(ws@8.20.1)(zod@4.4.3)
       partykit:
         specifier: ^0.0.115
         version: 0.0.115
