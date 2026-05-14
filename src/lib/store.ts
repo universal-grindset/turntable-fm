@@ -107,7 +107,28 @@ function set(updater: (s: RoomState) => RoomState) {
   roomStore.setState(updater);
 }
 
+// When connected to a multi-user server, action calls below are forwarded
+// to the server instead of mutating state directly. The local mutation
+// implementations remain so the app works fully offline / for tests.
+export type RemoteHandlers = {
+  joinDj: () => void;
+  leaveDj: () => void;
+  enqueue: (track: Track) => void;
+  removeFromQueue: (index: number) => void;
+  advance: () => void;
+  vote: (v: "awesome" | "lame") => void;
+  chat: (text: string) => void;
+  rename: (name: string) => void;
+  setAvatar: (avatar: string) => void;
+};
+
+let remote: RemoteHandlers | null = null;
+export function setRemote(r: RemoteHandlers | null) {
+  remote = r;
+}
+
 export function setMyName(name: string) {
+  if (remote) return remote.rename(name);
   set((s) => {
     const me = { ...s.me, name };
     return { ...s, me, users: { ...s.users, [me.id]: me } };
@@ -115,6 +136,7 @@ export function setMyName(name: string) {
 }
 
 export function setMyAvatar(avatar: string) {
+  if (remote) return remote.setAvatar(avatar);
   set((s) => {
     const me = { ...s.me, avatar };
     return { ...s, me, users: { ...s.users, [me.id]: me } };
@@ -126,6 +148,10 @@ export function setVolume(v: number) {
 }
 
 export function pushChat(text: string, kind: ChatMsg["kind"] = "msg", userId?: string) {
+  if (remote && kind === "msg" && !userId) {
+    remote.chat(text);
+    return;
+  }
   set((s) => ({
     ...s,
     chat: [
@@ -136,6 +162,7 @@ export function pushChat(text: string, kind: ChatMsg["kind"] = "msg", userId?: s
 }
 
 export function joinAsDj() {
+  if (remote) return remote.joinDj();
   const s = roomStore.state;
   if (s.djs.some((d) => d.userId === s.me.id)) return;
   const idx = s.djs.findIndex((d) => d.userId === null);
@@ -149,6 +176,7 @@ export function joinAsDj() {
 }
 
 export function leaveDj() {
+  if (remote) return remote.leaveDj();
   const s = roomStore.state;
   const idx = s.djs.findIndex((d) => d.userId === s.me.id);
   if (idx === -1) return;
@@ -160,6 +188,7 @@ export function leaveDj() {
 }
 
 export function enqueue(slotUserId: string, track: Track) {
+  if (remote && slotUserId === roomStore.state.me.id) return remote.enqueue(track);
   set((s) => ({
     ...s,
     djs: s.djs.map((d) =>
@@ -169,6 +198,7 @@ export function enqueue(slotUserId: string, track: Track) {
 }
 
 export function removeFromQueue(slotUserId: string, index: number) {
+  if (remote && slotUserId === roomStore.state.me.id) return remote.removeFromQueue(index);
   set((s) => ({
     ...s,
     djs: s.djs.map((d) =>
@@ -180,6 +210,7 @@ export function removeFromQueue(slotUserId: string, index: number) {
 }
 
 export function advance() {
+  if (remote) return remote.advance();
   const s = roomStore.state;
   const active = s.djs
     .map((d, i) => ({ i, d }))
@@ -237,6 +268,7 @@ export function advance() {
 }
 
 export function castVote(userId: string, v: Exclude<Vote, null>) {
+  if (remote && userId === roomStore.state.me.id) return remote.vote(v);
   const s = roomStore.state;
   const prev = s.votes[userId];
   if (prev === v) return;

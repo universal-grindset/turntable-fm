@@ -10,18 +10,26 @@ import { MyQueue } from "../components/MyQueue";
 import { AwesomeBurst } from "../components/AwesomeBurst";
 import { BotLoop } from "../components/BotLoop";
 import { seedDemo } from "../lib/store";
+import { connectParty, disconnectParty } from "../lib/party";
+
+const PARTY_HOST = (import.meta as any).env?.VITE_PARTY_HOST as string | undefined;
 
 export const Route = createFileRoute("/")({ component: Room });
 
 function Room() {
   useEffect(() => {
+    if (PARTY_HOST) {
+      connectParty("the-basement");
+      return () => disconnectParty();
+    }
     seedDemo();
+    return undefined;
   }, []);
 
   return (
     <div className="relative flex h-screen w-screen flex-col overflow-hidden">
       <YouTubePlayer />
-      <BotLoop />
+      {!PARTY_HOST && <BotLoop />}
       <AwesomeBurst />
 
       <Header />

@@ -1,5 +1,6 @@
 import { Star, Share2, Shuffle, List } from "lucide-react";
 import { MeBar } from "./MeBar";
+import { ConnStatus } from "./ConnStatus";
 
 export function Header() {
   return (
@@ -33,6 +34,7 @@ export function Header() {
         <div className="ml-2 hidden text-[11px] uppercase tracking-widest text-white/40 sm:block">
           indie · house · vibes
         </div>
+        <div className="ml-2"><ConnStatus /></div>
         <div className="flex-1" />
         <div className="hidden items-center gap-1 sm:flex">
           <button className="rounded p-1 text-white/60 hover:bg-white/10" title="share">
