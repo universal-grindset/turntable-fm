@@ -66,20 +66,12 @@ export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
                 <div key={bobToken ?? "static"} className={bobToken ? "headbob" : undefined}>
                   <Avatar
                     user={user}
-                    size={56}
+                    size={64}
+                    variant="card"
                     dancing={isCurrent}
                     active={isCurrent}
+                    showName
                   />
-                </div>
-                <div
-                  className={cn(
-                    "mt-1 max-w-[72px] truncate rounded px-1.5 py-px text-[9px] font-semibold",
-                    isCurrent
-                      ? "bg-accent text-white shadow"
-                      : "bg-black/70 text-white/90"
-                  )}
-                >
-                  {user.name}
                 </div>
                 {(user.points > 0 || slot.queue.length > 0) && (
                   <div className="mt-0.5 flex items-center gap-1">
@@ -127,7 +119,7 @@ export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
               className={bobToken ? "headbob" : "dance-slow"}
               style={bobToken ? { animationDelay: `${(i % 8) * 30}ms` } : { animationDelay: `${(i % 6) * 0.1}s` }}
             >
-              <Avatar user={u} size={32} />
+              <Avatar user={u} size={36} variant="card" />
             </div>
           ))}
           {crowd.length > 30 && (
