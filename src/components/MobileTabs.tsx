@@ -31,7 +31,7 @@ export function MobileTabs({ room, queue, chat }: Props) {
   // Render all three panes but only show the active one; this preserves
   // state (scroll, in-progress input, YT player position) across tabs.
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="flex h-full w-full min-w-0 min-h-0 flex-col">
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className={cn("h-full", tab === "room" ? "block" : "hidden")}>{room}</div>
         <div className={cn("h-full", tab === "queue" ? "block" : "hidden")}>{queue}</div>
