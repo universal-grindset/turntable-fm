@@ -29,21 +29,14 @@ export function connectParty(roomId: string) {
   socket.addEventListener("open", () => {
     connected = true;
     setRemote(remote);
-    // Assign me a stable random id so server can identify me across reconnects.
-    let id = roomStore.state.me.id;
-    if (id === "me") {
-      const persisted =
-        typeof localStorage !== "undefined" ? localStorage.getItem("tt_uid") : null;
-      id = persisted ?? Math.random().toString(36).slice(2, 12);
-      if (typeof localStorage !== "undefined") localStorage.setItem("tt_uid", id);
-      roomStore.setState((s) => ({ ...s, me: { ...s.me, id } }));
-    }
+    // Identity (id, name, avatar, color) has been rehydrated by store.rehydrateMe()
+    // before this connect ran, so the id is stable across reloads.
     const me = roomStore.state.me;
     socket?.send(
       JSON.stringify({
         type: "hello",
         me: {
-          id,
+          id: me.id,
           name: me.name,
           color: me.color,
           avatar: me.avatar,

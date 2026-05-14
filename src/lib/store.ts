@@ -48,6 +48,40 @@ export type RoomState = {
 };
 
 const ME_ID = "me";
+const STORAGE_KEY = "tt_me_v1";
+
+type StoredMe = { id: string; name: string; color: string; avatar: string };
+
+function loadStoredMe(): StoredMe | null {
+  if (typeof localStorage === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const j = JSON.parse(raw);
+    if (typeof j !== "object" || !j) return null;
+    if (typeof j.id !== "string" || typeof j.name !== "string") return null;
+    return {
+      id: String(j.id).slice(0, 64),
+      name: String(j.name).slice(0, 32),
+      color: typeof j.color === "string" ? j.color.slice(0, 16) : "#7c5cff",
+      avatar: typeof j.avatar === "string" ? j.avatar.slice(0, 256) : "/img/av-yeti.png",
+    };
+  } catch {
+    return null;
+  }
+}
+
+function saveStoredMe(me: { id: string; name: string; color: string; avatar: string }) {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ id: me.id, name: me.name, color: me.color, avatar: me.avatar })
+    );
+  } catch {
+    /* quota or disabled — non-fatal */
+  }
+}
 
 const DEMO: Track[] = [
   { videoId: "dQw4w9WgXcQ", title: "Rick Astley — Never Gonna Give You Up", durationSec: 213 },
@@ -128,18 +162,48 @@ export function setRemote(r: RemoteHandlers | null) {
 }
 
 export function setMyName(name: string) {
-  if (remote) return remote.rename(name);
   set((s) => {
     const me = { ...s.me, name };
+    saveStoredMe(me);
     return { ...s, me, users: { ...s.users, [me.id]: me } };
   });
+  if (remote) remote.rename(name);
 }
 
 export function setMyAvatar(avatar: string) {
-  if (remote) return remote.setAvatar(avatar);
   set((s) => {
     const me = { ...s.me, avatar };
+    saveStoredMe(me);
     return { ...s, me, users: { ...s.users, [me.id]: me } };
+  });
+  if (remote) remote.setAvatar(avatar);
+}
+
+/**
+ * Client-only: hydrate the local store with the persisted identity (id +
+ * name + avatar + color). Safe to call multiple times; idempotent.
+ */
+export function rehydrateMe() {
+  const stored = loadStoredMe();
+  if (!stored) {
+    // First visit — mint a stable id so reconnects look like the same person
+    if (typeof localStorage !== "undefined") {
+      const id = "u-" + Math.random().toString(36).slice(2, 12);
+      set((s) => {
+        const me = { ...s.me, id };
+        saveStoredMe(me);
+        return { ...s, me, users: { [id]: me } };
+      });
+    }
+    return;
+  }
+  set((s) => {
+    const me = { ...s.me, ...stored, points: s.users[stored.id]?.points ?? 0 };
+    return {
+      ...s,
+      me,
+      users: { ...s.users, [me.id]: me },
+    };
   });
 }
 
