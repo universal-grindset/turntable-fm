@@ -10,6 +10,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:watch": "vitest",
+    "check-deploy": "node scripts/check-deploy.mjs",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check ."

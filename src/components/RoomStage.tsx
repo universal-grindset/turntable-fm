@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useStore } from "@tanstack/react-store";
 import { roomStore, joinAsDj, leaveDj } from "../lib/store";
 import { Avatar } from "./Avatar";
@@ -12,8 +13,18 @@ export function RoomStage() {
   const djs = useStore(roomStore, (s) => s.djs);
   const users = useStore(roomStore, (s) => s.users);
   const currentDj = useStore(roomStore, (s) => s.currentDj);
+  const awesomeBurstAt = useStore(roomStore, (s) => s.awesomeBurstAt);
   const me = useStore(roomStore, (s) => s.me);
   const meIsDj = djs.some((d) => d.userId === me.id);
+
+  // Trigger a head-bob on every DJ when an awesome lands.
+  const [bobToken, setBobToken] = useState<number | null>(null);
+  useEffect(() => {
+    if (!awesomeBurstAt) return;
+    setBobToken(awesomeBurstAt);
+    const t = window.setTimeout(() => setBobToken(null), 1000);
+    return () => window.clearTimeout(t);
+  }, [awesomeBurstAt]);
 
   const djIds = new Set(djs.map((d) => d.userId).filter(Boolean) as string[]);
   const crowd = Object.values(users).filter((u) => !djIds.has(u.id));
@@ -50,12 +61,14 @@ export function RoomStage() {
               </button>
             ) : (
               <div className="relative flex flex-col items-center">
-                <Avatar
-                  user={user}
-                  size={56}
-                  dancing={isCurrent}
-                  active={isCurrent}
-                />
+                <div key={bobToken ?? "static"} className={bobToken ? "headbob" : undefined}>
+                  <Avatar
+                    user={user}
+                    size={56}
+                    dancing={isCurrent}
+                    active={isCurrent}
+                  />
+                </div>
                 <div
                   className={cn(
                     "mt-1 max-w-[72px] truncate rounded px-1.5 py-px text-[9px] font-semibold",
@@ -108,9 +121,9 @@ export function RoomStage() {
         <div className="flex flex-wrap items-end justify-center gap-x-1 gap-y-0.5">
           {crowd.slice(0, 30).map((u, i) => (
             <div
-              key={u.id}
-              className="dance-slow"
-              style={{ animationDelay: `${(i % 6) * 0.1}s` }}
+              key={`${u.id}-${bobToken ?? "x"}`}
+              className={bobToken ? "headbob" : "dance-slow"}
+              style={bobToken ? { animationDelay: `${(i % 8) * 30}ms` } : { animationDelay: `${(i % 6) * 0.1}s` }}
             >
               <Avatar user={u} size={32} />
             </div>

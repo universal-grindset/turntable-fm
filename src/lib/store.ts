@@ -199,7 +199,8 @@ export function advance() {
   }
 
   const order = active.map((x) => x.i);
-  let cursor = s.currentDj === null ? 0 : order.indexOf(s.currentDj);
+  // -1 so the first iteration picks the first active DJ on fresh start.
+  let cursor = s.currentDj === null ? -1 : order.indexOf(s.currentDj);
 
   for (let n = 0; n < order.length; n++) {
     cursor = (cursor + 1) % order.length;
