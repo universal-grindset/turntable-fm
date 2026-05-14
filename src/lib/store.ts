@@ -14,6 +14,7 @@ export type User = {
   color: string;
   avatar: string; // image path or emoji
   points: number;
+  isBot?: boolean;
 };
 
 export type DjSlot = {
@@ -234,18 +235,18 @@ export function advance() {
   }));
 }
 
-export function vote(v: Exclude<Vote, null>) {
+export function castVote(userId: string, v: Exclude<Vote, null>) {
   const s = roomStore.state;
-  const prev = s.votes[s.me.id];
+  const prev = s.votes[userId];
   if (prev === v) return;
-  const newVotes = { ...s.votes, [s.me.id]: v };
+  const newVotes = { ...s.votes, [userId]: v };
   const awesomes = Object.values(newVotes).filter((x) => x === "awesome").length;
   const lames = Object.values(newVotes).filter((x) => x === "lame").length;
 
   let users = s.users;
   if (v === "awesome" && prev !== "awesome" && s.currentDj !== null) {
     const djId = s.djs[s.currentDj].userId;
-    if (djId) {
+    if (djId && djId !== userId) {
       const u = users[djId];
       users = { ...users, [djId]: { ...u, points: u.points + 1 } };
     }
@@ -257,8 +258,15 @@ export function vote(v: Exclude<Vote, null>) {
     awesomesThisSpin: awesomes,
     lamesThisSpin: lames,
     users,
-    awesomeBurstAt: v === "awesome" && prev !== "awesome" ? Date.now() : c.awesomeBurstAt,
+    awesomeBurstAt:
+      v === "awesome" && prev !== "awesome" && userId === c.me.id
+        ? Date.now()
+        : c.awesomeBurstAt,
   }));
+}
+
+export function vote(v: Exclude<Vote, null>) {
+  castVote(roomStore.state.me.id, v);
 }
 
 export function addUser(u: Omit<User, "points"> & { points?: number }): string {
@@ -286,15 +294,17 @@ let seeded = false;
 export function seedDemo() {
   if (seeded) return;
   seeded = true;
-  const a = addUser({ id: "starlight", name: "dj_starlight", color: "#ff3bd4", avatar: "/img/av-fox.png" });
-  const b = addUser({ id: "808owl", name: "808_owl", color: "#42c9ff", avatar: "/img/av-robot.png" });
-  const c = addUser({ id: "vinylcat", name: "vinyl_cat", color: "#ffcb47", avatar: "/img/av-cat.png" });
-  addUser({ id: "neon_panda", name: "neon_panda", color: "#2ee6a8", avatar: "/img/av-panda.png" });
-  addUser({ id: "miss_alien", name: "miss_alien", color: "#a3e635", avatar: "/img/av-alien.png" });
+  const a = addUser({ id: "starlight", name: "dj_starlight", color: "#ff3bd4", avatar: "/img/av-fox.png", isBot: true });
+  const b = addUser({ id: "808owl", name: "808_owl", color: "#42c9ff", avatar: "/img/av-robot.png", isBot: true });
+  addUser({ id: "vinylcat", name: "vinyl_cat", color: "#ffcb47", avatar: "/img/av-cat.png", isBot: true });
+  addUser({ id: "neon_panda", name: "neon_panda", color: "#2ee6a8", avatar: "/img/av-panda.png", isBot: true });
+  addUser({ id: "miss_alien", name: "miss_alien", color: "#a3e635", avatar: "/img/av-alien.png", isBot: true });
+  addUser({ id: "ninja_b", name: "ninja_b", color: "#60a5fa", avatar: "/img/av-ninja.png", isBot: true });
+  addUser({ id: "shark_dad", name: "shark_dad", color: "#f06292", avatar: "/img/av-shark.png", isBot: true });
 
   botJoin(a, [DEMO[1], DEMO[3]]);
   botJoin(b, [DEMO[2], DEMO[4]]);
-  // c is in crowd, not a DJ
+  // the rest are in the crowd
 
   pushChat("anyone got a 90s set?", "msg", a);
   pushChat("i got u 🔥", "msg", b);
@@ -303,4 +313,37 @@ export function seedDemo() {
   if (roomStore.state.currentDj === null) advance();
 }
 
-export { DEMO as DEMO_TRACKS };
+const BOT_REACTIONS = [
+  "🔥",
+  "vibes immaculate",
+  "this slaps",
+  "ok this is fire",
+  "ohhh yes",
+  "🪩",
+  "yessss",
+  "this take me back",
+  "💃💃",
+  "perfect for the room rn",
+  "🎧🎧🎧",
+  "wholesome track choice",
+  "WHO IS THIS",
+  "saving this one",
+];
+
+export function botRestockQueue(botId: string) {
+  const s = roomStore.state;
+  const slot = s.djs.find((d) => d.userId === botId);
+  if (!slot) return;
+  if (slot.queue.length >= 2) return;
+  // pick 1-2 demo tracks not already in this bot's queue
+  const inQueue = new Set(slot.queue.map((t) => t.videoId));
+  const pool = DEMO.filter((t) => !inQueue.has(t.videoId));
+  const count = 1 + Math.floor(Math.random() * 2);
+  for (let i = 0; i < count && pool.length; i++) {
+    const idx = Math.floor(Math.random() * pool.length);
+    const [picked] = pool.splice(idx, 1);
+    enqueue(botId, picked);
+  }
+}
+
+export { DEMO as DEMO_TRACKS, BOT_REACTIONS };

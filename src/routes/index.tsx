@@ -8,6 +8,7 @@ import { Chat } from "../components/Chat";
 import { MyQueue } from "../components/MyQueue";
 import { MeBar } from "../components/MeBar";
 import { AwesomeBurst } from "../components/AwesomeBurst";
+import { BotLoop } from "../components/BotLoop";
 import { seedDemo } from "../lib/store";
 
 export const Route = createFileRoute("/")({ component: Room });
@@ -20,6 +21,7 @@ function Room() {
   return (
     <div className="relative flex h-screen w-screen flex-col overflow-hidden">
       <YouTubePlayer />
+      <BotLoop />
       <AwesomeBurst />
 
       <header className="flex items-center justify-between gap-4 border-b border-white/5 px-4 py-2.5">
