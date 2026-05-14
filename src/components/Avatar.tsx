@@ -25,8 +25,8 @@ export function Avatar({
     <div className="flex flex-col items-center gap-1 select-none">
       <div
         className={cn(
-          "relative rounded-full ring-2 ring-white/20 overflow-hidden",
-          active && "ring-4 glow-pink",
+          "relative overflow-hidden rounded-full ring-2",
+          active ? "ring-accent glow-pink" : "ring-white/30",
           dancing && "dance"
         )}
         style={{
@@ -43,13 +43,20 @@ export function Avatar({
             width={size}
             height={size}
             className="h-full w-full object-cover"
+            // Pixel-art avatars come with a near-white background; multiply
+            // blend mode lets the colored ring background show through any
+            // white pixels so the character "floats" in the user's color.
+            style={{
+              mixBlendMode: "multiply",
+              imageRendering: "pixelated",
+            }}
             onError={() => setImgFailed(true)}
             draggable={false}
           />
         ) : (
           <div
-            className="flex h-full w-full items-center justify-center text-2xl"
-            style={{ fontSize: size * 0.55 }}
+            className="flex h-full w-full items-center justify-center font-bold text-white"
+            style={{ fontSize: size * 0.5 }}
           >
             {isImage ? user.name[0]?.toUpperCase() ?? "?" : user.avatar}
           </div>

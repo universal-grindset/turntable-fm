@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RRoomIdRouteImport } from './routes/r.$roomId'
+import { Route as ApiAidjRouteImport } from './routes/api/aidj'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RRoomIdRoute = RRoomIdRouteImport.update({
+  id: '/r/$roomId',
+  path: '/r/$roomId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAidjRoute = ApiAidjRouteImport.update({
+  id: '/api/aidj',
+  path: '/api/aidj',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/aidj': typeof ApiAidjRoute
+  '/r/$roomId': typeof RRoomIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/aidj': typeof ApiAidjRoute
+  '/r/$roomId': typeof RRoomIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/aidj': typeof ApiAidjRoute
+  '/r/$roomId': typeof RRoomIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/aidj' | '/r/$roomId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/aidj' | '/r/$roomId'
+  id: '__root__' | '/' | '/api/aidj' | '/r/$roomId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiAidjRoute: typeof ApiAidjRoute
+  RRoomIdRoute: typeof RRoomIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/r/$roomId': {
+      id: '/r/$roomId'
+      path: '/r/$roomId'
+      fullPath: '/r/$roomId'
+      preLoaderRoute: typeof RRoomIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/aidj': {
+      id: '/api/aidj'
+      path: '/api/aidj'
+      fullPath: '/api/aidj'
+      preLoaderRoute: typeof ApiAidjRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiAidjRoute: ApiAidjRoute,
+  RRoomIdRoute: RRoomIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

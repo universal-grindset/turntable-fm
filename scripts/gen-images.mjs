@@ -42,19 +42,43 @@ const JOBS = [
       "red velvet curtain backdrop, five DJ decks lined up at the back stage with glowing vinyl turntables, " +
       "neon disco lights, empty dance floor in foreground, no people, " + STYLE,
     aspect: "16:9", w: 1280, h: 768 },
+  { name: "room-hiphop.png",
+    prompt:
+      "isometric view of a brick-walled hip hop lounge, graffiti backdrop, " +
+      "five DJ decks at the back with vinyl turntables and an MPC sampler, " +
+      "gold neon accents, dim warm lighting, boombox in the corner, no people, " + STYLE,
+    aspect: "16:9", w: 1280, h: 768 },
+  { name: "room-psych.png",
+    prompt:
+      "isometric view of a psychedelic 1970s rock club, lava-lamp blob backdrop, " +
+      "five DJ decks at the back with vintage turntables, " +
+      "warm orange and purple lighting, swirly patterned floor, no people, " + STYLE,
+    aspect: "16:9", w: 1280, h: 768 },
+  { name: "room-house.png",
+    prompt:
+      "isometric view of an underground house music bunker, concrete walls, " +
+      "five DJ decks at the back with CDJs and a mixer, blue and cyan laser lights, " +
+      "subwoofer stacks, fog haze, no people, " + STYLE,
+    aspect: "16:9", w: 1280, h: 768 },
+  { name: "room-lofi.png",
+    prompt:
+      "isometric pixel-art cozy lofi bedroom studio at night, fairy lights, hanging plants, " +
+      "five DJ decks lined up at the back with cassette players and a small sampler, " +
+      "soft warm yellow lamp glow, plush rug, no people, " + STYLE,
+    aspect: "16:9", w: 1280, h: 768 },
   { name: "logo.png",
     prompt:
       "big chunky vector wordmark that reads 'TURNTABLE FM', retro 2010s web logo, " +
       "pink and purple gradient text, vinyl record replacing the dot on the i, solid dark navy background, centered, " + STYLE,
     aspect: "2:1", w: 1024, h: 512 },
-  { name: "av-yeti.png",  prompt: "cute chibi yeti DJ avatar with headphones, white fluffy fur, big black eyes, holding a vinyl record, centered portrait on solid pastel pink background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-robot.png", prompt: "chibi square robot DJ avatar, glowing cyan eyes, antenna on head, headphones, centered portrait on solid pastel mint background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-panda.png", prompt: "chibi panda DJ avatar wearing pink sunglasses, baseball cap backwards, headphones, centered portrait on solid pastel yellow background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-ninja.png", prompt: "chibi ninja DJ avatar with red headband, big anime eyes, headphones, centered portrait on solid pastel blue background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-fox.png",   prompt: "chibi orange fox DJ avatar, fluffy curled tail, mischievous grin, headphones, centered portrait on solid pastel peach background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-alien.png", prompt: "chibi lime green alien DJ avatar with three eyes and a head antenna, headphones, centered portrait on solid pastel lavender background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-cat.png",   prompt: "chibi orange tabby cat DJ avatar, big black headphones over the ears, content half-closed eyes, centered portrait on solid pastel teal background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
-  { name: "av-shark.png", prompt: "chibi blue shark DJ avatar, big toothy grin, headphones, centered portrait on solid pastel coral background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-yeti.png",  prompt: "full body chibi pixel-art yeti character standing pose, white fluffy fur, big black eyes, headphones, holding small vinyl record, NO BACKGROUND, solid flat black background fully transparent #000000, character isolated on pure black, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-robot.png", prompt: "chibi pixel-art square robot DJ character standing, glowing cyan eyes, antenna on head, big headphones, full body visible, pure black solid background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-panda.png", prompt: "pixel-art mascot bear character with black and white fur, big circular ears, dj headphones, baseball cap, cute simple shapes, standing pose, solid pure black background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-ninja.png", prompt: "full body chibi pixel-art ninja character standing pose, red headband, big anime eyes, headphones, NO BACKGROUND, solid flat black background fully transparent #000000, character isolated on pure black, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-fox.png",   prompt: "pixel-art mascot orange canine character with pointy ears, fluffy curly tail, dj headphones, smiling, cute simple shapes, standing pose, solid pure black background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-alien.png", prompt: "chibi pixel-art friendly lime green alien DJ character standing, three round eyes, single head antenna, big headphones, full body visible, pure black solid background, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-cat.png",   prompt: "full body chibi pixel-art orange tabby cat character standing pose, big black headphones, content half-closed eyes, NO BACKGROUND, solid flat black background fully transparent #000000, character isolated on pure black, " + STYLE, aspect: "1:1", w: 768, h: 768 },
+  { name: "av-shark.png", prompt: "full body chibi pixel-art blue shark character standing pose, big toothy grin, headphones, NO BACKGROUND, solid flat black background fully transparent #000000, character isolated on pure black, " + STYLE, aspect: "1:1", w: 768, h: 768 },
 ];
 
 function buildInput(app, job) {

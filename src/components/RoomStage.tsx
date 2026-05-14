@@ -4,12 +4,14 @@ import { roomStore, joinAsDj, leaveDj } from "../lib/store";
 import { Avatar } from "./Avatar";
 import { cn } from "../lib/utils";
 
+type Props = { backgroundUrl?: string };
+
 // 5 stage slot positions as percentages of the room background.
 // Tuned to align with the pixel-art turntable decks in /img/room.png.
 const STAGE_X = [18, 33, 48, 63, 78];
 const STAGE_Y = 48;
 
-export function RoomStage() {
+export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
   const djs = useStore(roomStore, (s) => s.djs);
   const users = useStore(roomStore, (s) => s.users);
   const currentDj = useStore(roomStore, (s) => s.currentDj);
@@ -33,7 +35,7 @@ export function RoomStage() {
     <div
       className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
       style={{
-        backgroundImage: "url(/img/room.png)",
+        backgroundImage: `url(${backgroundUrl})`,
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
         imageRendering: "pixelated",

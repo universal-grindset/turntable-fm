@@ -4,9 +4,11 @@ import { roomStore, vote, advance } from "../lib/store";
 import { fmtTime } from "../lib/utils";
 import { Heart, ThumbsDown, SkipForward } from "lucide-react";
 
+type Props = { accent?: string };
+
 // LED dot-matrix marquee in the style of the original turntable.fm front
 // panel — red/orange dots, scrolling track title, elapsed time.
-export function Marquee() {
+export function Marquee({ accent = "#ff5f1f" }: Props = {}) {
   const track = useStore(roomStore, (s) => s.currentTrack);
   const startedAt = useStore(roomStore, (s) => s.trackStartedAt);
   const awesomes = useStore(roomStore, (s) => s.awesomesThisSpin);
@@ -43,9 +45,8 @@ export function Marquee() {
         <div
           className="font-mono text-[18px] font-bold uppercase whitespace-nowrap tabular-nums tracking-wider"
           style={{
-            color: "#ff5f1f",
-            textShadow:
-              "0 0 6px rgba(255,95,31,0.9), 0 0 14px rgba(255,95,31,0.6)",
+            color: accent,
+            textShadow: `0 0 6px ${accent}e6, 0 0 14px ${accent}99`,
             fontFamily: '"DM Mono", "JetBrains Mono", "Courier New", monospace',
           }}
         >
