@@ -290,26 +290,53 @@ export function botJoin(userId: string, queue: Track[] = []) {
   });
 }
 
+const AV_POOL = [
+  "/img/av-yeti.png",
+  "/img/av-robot.png",
+  "/img/av-panda.png",
+  "/img/av-ninja.png",
+  "/img/av-fox.png",
+  "/img/av-alien.png",
+  "/img/av-cat.png",
+  "/img/av-shark.png",
+];
+
+const COLOR_POOL = ["#ff3bd4", "#7c5cff", "#2ee6a8", "#ffcb47", "#42c9ff", "#a3e635", "#f06292", "#60a5fa", "#fb7185", "#ff8c42"];
+
+const HANDLES = [
+  "dj_starlight", "808_owl", "vinyl_cat", "neon_panda", "miss_alien",
+  "ninja_b", "shark_dad", "wax_witch", "subkick", "ghost_kid",
+  "synth_buddy", "polaroid", "tape_loop", "patch_bay", "loop_pedal",
+  "moog_cat", "rave_rabbit", "midi_mom", "low_pass", "bass_face",
+  "tempo_lord", "scratch_dust", "monitor_kid", "stage_left", "bpm_baby",
+];
+
 let seeded = false;
 export function seedDemo() {
   if (seeded) return;
   seeded = true;
-  const a = addUser({ id: "starlight", name: "dj_starlight", color: "#ff3bd4", avatar: "/img/av-fox.png", isBot: true });
-  const b = addUser({ id: "808owl", name: "808_owl", color: "#42c9ff", avatar: "/img/av-robot.png", isBot: true });
-  addUser({ id: "vinylcat", name: "vinyl_cat", color: "#ffcb47", avatar: "/img/av-cat.png", isBot: true });
-  addUser({ id: "neon_panda", name: "neon_panda", color: "#2ee6a8", avatar: "/img/av-panda.png", isBot: true });
-  addUser({ id: "miss_alien", name: "miss_alien", color: "#a3e635", avatar: "/img/av-alien.png", isBot: true });
-  addUser({ id: "ninja_b", name: "ninja_b", color: "#60a5fa", avatar: "/img/av-ninja.png", isBot: true });
-  addUser({ id: "shark_dad", name: "shark_dad", color: "#f06292", avatar: "/img/av-shark.png", isBot: true });
 
-  botJoin(a, [DEMO[1], DEMO[3]]);
-  botJoin(b, [DEMO[2], DEMO[4]]);
-  // the rest are in the crowd
+  const dj1 = addUser({ id: "starlight", name: "dj_starlight", color: "#ff3bd4", avatar: "/img/av-fox.png", isBot: true });
+  const dj2 = addUser({ id: "808owl", name: "808_owl", color: "#42c9ff", avatar: "/img/av-robot.png", isBot: true });
 
-  pushChat("anyone got a 90s set?", "msg", a);
-  pushChat("i got u 🔥", "msg", b);
+  // Seed a dense crowd so the dancefloor looks like a real room.
+  for (let i = 0; i < HANDLES.length - 2; i++) {
+    const name = HANDLES[i + 2];
+    addUser({
+      id: name,
+      name,
+      color: COLOR_POOL[i % COLOR_POOL.length],
+      avatar: AV_POOL[i % AV_POOL.length],
+      isBot: true,
+    });
+  }
 
-  // If we have any tracks queued and no one is spinning, start
+  botJoin(dj1, [DEMO[1], DEMO[3]]);
+  botJoin(dj2, [DEMO[2], DEMO[4]]);
+
+  pushChat("anyone got a 90s set?", "msg", dj1);
+  pushChat("i got u 🔥", "msg", dj2);
+
   if (roomStore.state.currentDj === null) advance();
 }
 
