@@ -71,34 +71,37 @@ export function Marquee({ accent = "#ff5f1f" }: Props = {}) {
       <div className="flex items-center gap-1">
         <button
           onClick={() => vote("lame")}
-          className={`flex items-center gap-1 rounded-full px-2.5 py-1.5 text-sm transition ${
+          className={`flex h-10 items-center gap-1 rounded-full px-2.5 text-sm transition active:scale-95 ${
             myVote === "lame"
               ? "bg-lame/25 text-lame ring-2 ring-lame/60"
               : "bg-black/40 text-white/70 hover:bg-white/10"
           }`}
           title="lame"
+          aria-label="vote lame"
         >
-          <ThumbsDown size={14} />
+          <ThumbsDown size={16} />
           <span className="tabular-nums text-xs">{lames}</span>
         </button>
         <button
           onClick={() => vote("awesome")}
-          className={`flex items-center gap-1 rounded-full px-2.5 py-1.5 text-sm transition ${
+          className={`flex h-10 items-center gap-1 rounded-full px-2.5 text-sm transition active:scale-95 ${
             myVote === "awesome"
               ? "bg-awesome/25 text-awesome ring-2 ring-awesome/60"
               : "bg-black/40 text-white/70 hover:bg-white/10"
           }`}
           title="awesome"
+          aria-label="vote awesome"
         >
-          <Heart size={14} fill={myVote === "awesome" ? "currentColor" : "none"} />
+          <Heart size={16} fill={myVote === "awesome" ? "currentColor" : "none"} />
           <span className="tabular-nums text-xs">{awesomes}</span>
         </button>
         <button
           onClick={() => advance()}
-          className="rounded-full bg-black/40 p-1.5 text-white/60 hover:bg-white/10"
+          className="grid h-10 w-10 place-items-center rounded-full bg-black/40 text-white/60 hover:bg-white/10 active:scale-95"
           title="skip"
+          aria-label="skip track"
         >
-          <SkipForward size={14} />
+          <SkipForward size={16} />
         </button>
       </div>
 

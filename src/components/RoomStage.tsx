@@ -4,14 +4,27 @@ import { roomStore, joinAsDj, leaveDj } from "../lib/store";
 import { Avatar } from "./Avatar";
 import { cn } from "../lib/utils";
 
-type Props = { backgroundUrl?: string };
+type Props = {
+  backgroundUrl?: string;
+  /** When true, render the portrait-aspect layout (mobile). */
+  portrait?: boolean;
+};
+
+// Stage positions for portrait layout — booth is at the top, decks
+// span the upper third, dancefloor in the lower half.
+const STAGE_X_PORTRAIT = [15, 32, 49, 67, 84];
+const STAGE_Y_PORTRAIT = 30;
+const CROWD_Y_PORTRAIT = 75;
 
 // 5 stage slot positions as percentages of the room background.
 // Tuned to align with the pixel-art turntable decks in /img/room.png.
 const STAGE_X = [18, 33, 48, 63, 78];
 const STAGE_Y = 48;
 
-export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
+export function RoomStage({ backgroundUrl = "/img/room.png", portrait = false }: Props) {
+  const stageX = portrait ? STAGE_X_PORTRAIT : STAGE_X;
+  const stageY = portrait ? STAGE_Y_PORTRAIT : STAGE_Y;
+  const crowdY = portrait ? CROWD_Y_PORTRAIT : 78;
   const djs = useStore(roomStore, (s) => s.djs);
   const users = useStore(roomStore, (s) => s.users);
   const currentDj = useStore(roomStore, (s) => s.currentDj);
@@ -36,6 +49,9 @@ export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
       className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
       style={{
         backgroundImage: `url(${backgroundUrl})`,
+        // Stretch the 16:9 source to fill the container at whatever aspect
+        // ratio is available. Slightly distorts the pixels but keeps
+        // percentage-anchored decks aligned in every viewport size.
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
         imageRendering: "pixelated",
@@ -50,16 +66,18 @@ export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
           <div
             key={i}
             className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${STAGE_X[i]}%`, top: `${STAGE_Y}%` }}
+            style={{ left: `${stageX[i]}%`, top: `${stageY}%` }}
           >
             {empty ? (
               <button
                 onClick={() => !meIsDj && joinAsDj()}
                 disabled={meIsDj}
-                className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-dashed border-white/40 bg-black/30 text-white/70 backdrop-blur-sm transition hover:border-accent hover:bg-accent/30 hover:text-white disabled:opacity-40 disabled:hover:border-white/40 disabled:hover:bg-black/30"
+                // 44px+ tap target on small screens (Apple HIG); 48px on larger
+                className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full border-2 border-dashed border-white/40 bg-black/30 text-white/70 backdrop-blur-sm transition active:scale-95 hover:border-accent hover:bg-accent/30 hover:text-white disabled:opacity-40 disabled:hover:border-white/40 disabled:hover:bg-black/30"
                 title={meIsDj ? "you're already DJing" : "step up to DJ"}
+                aria-label={meIsDj ? "already DJing" : "step up to DJ"}
               >
-                <span className="text-2xl leading-none">+</span>
+                <span className="text-2xl sm:text-3xl leading-none">+</span>
               </button>
             ) : (
               <div className="relative flex flex-col items-center">
@@ -110,7 +128,7 @@ export function RoomStage({ backgroundUrl = "/img/room.png" }: Props) {
       {/* Dancefloor crowd — anchored on the spotlight in the foreground */}
       <div
         className="absolute -translate-x-1/2 -translate-y-1/2"
-        style={{ left: "50%", top: "78%", width: "72%" }}
+        style={{ left: "50%", top: `${crowdY}%`, width: "82%" }}
       >
         <div className="flex flex-wrap items-end justify-center gap-x-1 gap-y-0.5">
           {crowd.slice(0, 30).map((u, i) => (

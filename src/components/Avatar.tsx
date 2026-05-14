@@ -43,7 +43,7 @@ export function Avatar({
               src={user.avatar}
               alt={user.name}
               className="h-full w-full object-cover"
-              style={{ mixBlendMode: "multiply", imageRendering: "pixelated" }}
+              style={{ imageRendering: "pixelated" }}
               onError={() => setImgFailed(true)}
               draggable={false}
             />
@@ -97,12 +97,8 @@ export function Avatar({
               active && "drop-shadow-[0_0_6px_rgba(255,59,212,0.8)]"
             )}
             style={{
-              // Multiply blend so the off-white background of the gen'd
-              // avatars drops into the scene. We layer a colored "glow"
-              // behind via box-shadow to give each user some identity.
-              mixBlendMode: "multiply",
               imageRendering: "pixelated",
-              filter: active ? `drop-shadow(0 0 4px ${user.color})` : `drop-shadow(0 1px 2px rgba(0,0,0,0.6))`,
+              filter: active ? `drop-shadow(0 0 4px ${user.color})` : `drop-shadow(0 1px 2px rgba(0,0,0,0.7))`,
             }}
             onError={() => setImgFailed(true)}
             draggable={false}

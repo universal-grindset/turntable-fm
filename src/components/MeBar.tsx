@@ -31,7 +31,7 @@ export function MeBar() {
               src={me.avatar}
               alt={me.name}
               className="h-full w-full object-cover"
-              style={{ mixBlendMode: "multiply", imageRendering: "pixelated" }}
+              style={{ imageRendering: "pixelated" }}
             />
           ) : (
             <span className="text-xl">{me.avatar}</span>

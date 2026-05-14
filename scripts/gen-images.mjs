@@ -42,6 +42,36 @@ const JOBS = [
       "red velvet curtain backdrop, five DJ decks lined up at the back stage with glowing vinyl turntables, " +
       "neon disco lights, empty dance floor in foreground, no people, " + STYLE,
     aspect: "16:9", w: 1280, h: 768 },
+  { name: "room-portrait.png",
+    prompt:
+      "vertical portrait composition of a cozy virtual nightclub room, " +
+      "DJ booth at the top half with five turntables and red velvet curtain backdrop, " +
+      "wide hardwood dance floor at the bottom with a spotlight, neon disco lights overhead, no people, " + STYLE,
+    aspect: "9:16", w: 768, h: 1280 },
+  { name: "room-hiphop-portrait.png",
+    prompt:
+      "vertical portrait composition of a hip hop lounge, brick wall and graffiti backdrop, " +
+      "DJ booth at the top half with five turntables and an MPC, " +
+      "warm dance floor at the bottom with a spotlight, gold neon accents, boombox in corner, no people, " + STYLE,
+    aspect: "9:16", w: 768, h: 1280 },
+  { name: "room-psych-portrait.png",
+    prompt:
+      "vertical portrait composition of a psychedelic 1970s rock club, lava-lamp blob backdrop at top, " +
+      "DJ booth in upper half with five vintage turntables, swirly patterned dance floor below, " +
+      "warm orange and purple lighting, no people, " + STYLE,
+    aspect: "9:16", w: 768, h: 1280 },
+  { name: "room-house-portrait.png",
+    prompt:
+      "vertical portrait composition of an underground house music bunker, concrete walls, " +
+      "DJ booth in upper half with five CDJs and a mixer, dance floor below, " +
+      "blue and cyan laser lights, subwoofer stacks, fog haze, no people, " + STYLE,
+    aspect: "9:16", w: 768, h: 1280 },
+  { name: "room-lofi-portrait.png",
+    prompt:
+      "vertical portrait composition of a cozy lofi bedroom studio at night, fairy lights and plants on the walls, " +
+      "DJ booth in upper half with five cassette players and a small sampler, " +
+      "plush rug dance area below, soft warm yellow lamp glow, no people, " + STYLE,
+    aspect: "9:16", w: 768, h: 1280 },
   { name: "room-hiphop.png",
     prompt:
       "isometric view of a brick-walled hip hop lounge, graffiti backdrop, " +

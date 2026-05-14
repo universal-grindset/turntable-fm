@@ -35,7 +35,10 @@ function Room() {
     <div className="flex h-full min-h-0 flex-col gap-2 px-2 pt-2 pb-1 sm:gap-3 sm:px-3 sm:pt-3">
       <Marquee accent={def.accent} />
       <div className="flex-1 min-h-0 overflow-hidden">
-        <RoomStage backgroundUrl={def.background} />
+        <RoomStage
+          backgroundUrl={def.backgroundPortrait ?? def.background}
+          portrait
+        />
       </div>
     </div>
   );
